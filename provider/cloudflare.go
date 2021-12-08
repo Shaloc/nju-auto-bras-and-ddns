@@ -42,6 +42,7 @@ func (cf *DDNSCloudflare) Initialize(key string, email string, ddnsUrl string) {
 		log.Fatalln("Cloudflare: Error " + err.Error())
 	}
 	cf.zoneID = id
+	log.Printf("Cloudlfare: Initialized as %#v", cf)
 }
 
 func (cf *DDNSCloudflare) Update(ip net.IP) {

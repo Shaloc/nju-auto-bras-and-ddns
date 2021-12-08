@@ -18,7 +18,7 @@ type ResultDataElem struct {
 	FullName string `json:"fullname"` // the actual name, like 张三
 	MAC string `json:"mac"`
 	ServiceName string `json:"service_name"`
-	UserIPV4 int `json:"user_ipv4"`
+	UserIPV4 uint32 `json:"user_ipv4"`
 	UserIPV6 string `json:"user_ipv6"`
 	UserName string `json:"username"` // the NJUID
 
@@ -38,32 +38,32 @@ type StatusData struct {
 // AcquirePortalStatus
 // Log the current portal status, for debug purpose
 // Handles the not login status
-func AcquirePortalStatus() error {
+func AcquirePortalStatus() (*StatusData, error) {
 	req, err := http.NewRequest("GET", PortalStatusUrl, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	var data StatusData
+	data := &StatusData{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if data.ReplyCode != 0 {
 		log.Println("BrasStatus: Cannot acquire bras status, maybe not login?" )
 		log.Printf("BrasStatus: Error code %d\n", data.ReplyCode)
-		return nil
+		return data, nil
 	}
 	for _, resultElem := range data.Results.ResultElems {
 		log.Printf("BrasStatus: %v\n", resultElem)
 		log.Printf("BrasStatus: Current IP4 %v\n", IntToIPv4(uint32(resultElem.UserIPV4)))
 	}
-	return nil
+	return data, nil
 }

@@ -1,0 +1,16 @@
+core:
+  update_interval: 600                  #seconds of update interval
+provider:
+  using: cloudflare                     #ddns tool, blank if not using any
+  url: nju.await.moe                    #ddns url
+  cloudflare:
+    email: your_cf_account_email        #your cloudflare api email
+    api_key: your_cf_api_key            #your cloudflare api key
+bras:
+  user_name: your_user_name             #your bras username
+  password: your_password               #your bras password, may not available if you are enrolled after 2021
+notify:
+  using: bark                           #notify tool, blank if not using any
+  bark:
+    topic: NJUBras                      #bark topic
+    url: https://bark.balabala/bala     #your bark url, without the last '/'

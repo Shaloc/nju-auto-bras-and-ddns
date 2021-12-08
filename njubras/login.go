@@ -16,7 +16,7 @@ type UserInfo struct {
 	AreaName string `json:"area_name"`
 	AcctStartTime uint `json:"acctstarttime"`
 	Balance uint `json:"balance"`
-	UserIPV4 uint `json:"useripv4"`
+	UserIPV4 uint32 `json:"useripv4"`
 	UserIPV6 string `json:"useripv6"`
 	MacAddr string `json:"mac"`
 	Domain string `json:"domain"`
