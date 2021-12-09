@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/url"
+	"nju_auto_ddns/ddns"
 	"strings"
 
 	"github.com/cloudflare/cloudflare-go"
@@ -20,19 +21,19 @@ type DDNSCloudflare struct {
 	instance *cloudflare.API
 }
 
-func (cf *DDNSCloudflare) Initialize(key string, email string, ddnsUrl string) {
-	tmpUrl, err := url.Parse("https://" + ddnsUrl)
+func (cf *DDNSCloudflare) Initialize(conf *ddns.DynamicDNSConfig) {
+	tmpUrl, err := url.Parse("https://" + conf.TargetUrl)
 	if err != nil {
 		log.Fatalln("Cloudflare: Error: " + err.Error())
 	}
 	parts := strings.Split(tmpUrl.Hostname(), ".")
 	domain := parts[len(parts) - 2] + "." + parts[len(parts) - 1]
-	cf.apiKey = key
-	cf.apiEmail = email
-	cf.url = ddnsUrl
+	cf.apiKey = conf.ApiKey
+	cf.apiEmail = conf.ApiEmail
+	cf.url = conf.TargetUrl
 	cf.domain = domain
 	cf.lastIP = net.IP{0, 0, 0, 0}
-	api, err := cloudflare.New(key, email)
+	api, err := cloudflare.New(cf.apiKey, cf.apiEmail)
 	if err != nil {
 		log.Fatalln("Cloudflare: initialize api failed... " + err.Error())
 	}
@@ -44,6 +45,7 @@ func (cf *DDNSCloudflare) Initialize(key string, email string, ddnsUrl string) {
 	cf.zoneID = id
 	log.Printf("Cloudlfare: Initialized as %#v", cf)
 }
+
 
 func (cf *DDNSCloudflare) Update(ip net.IP) {
 	if ip.String() == cf.lastIP.String() {

@@ -3,26 +3,25 @@ package bark
 import (
 	"log"
 	"net/http"
+	"nju_auto_ddns/notify"
 )
 
 type NotifierBark struct {
 	apiUrl string
+	topic string
 }
 
-func (barkNotifier *NotifierBark) GetApiUrl() string {
-	return barkNotifier.apiUrl
+func (barkNotifier *NotifierBark) Initialize(conf *notify.NotifierConfig) {
+	barkNotifier.apiUrl = conf.ApiUrl
+	barkNotifier.topic = conf.Topic
 }
 
-func (barkNotifier *NotifierBark) Initialize(url string) {
-	barkNotifier.apiUrl = url
-}
-
-func (barkNotifier *NotifierBark) DoNotify(topic string, message string) {
+func (barkNotifier *NotifierBark) DoNotify(message string) {
 	if len(barkNotifier.apiUrl) == 0 {
 		log.Println("BarkNotifier: Error: no api url set")
 		return
 	}
-	queryUrl := barkNotifier.apiUrl + "/" + topic + "/" + message
+	queryUrl := barkNotifier.apiUrl + "/" + barkNotifier.topic + "/" + message
 	log.Println("BarkNotifier: Debug: query " + queryUrl)
 	req, err := http.NewRequest("GET", queryUrl, nil)
 	if err != nil {
@@ -34,6 +33,6 @@ func (barkNotifier *NotifierBark) DoNotify(topic string, message string) {
 		log.Println("BarkNotifier: Error: Bark notify failed: " + err.Error())
 		return
 	}
-	log.Println("BarkNotifier: Sent " + topic + " " + message)
+	log.Println("BarkNotifier: Sent " + barkNotifier.topic + " " + message)
 	return
 }

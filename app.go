@@ -2,13 +2,13 @@ package main
 
 import (
 	"log"
+	"nju_auto_ddns/ddns"
 	"nju_auto_ddns/njubras"
-	"nju_auto_ddns/notify/bark"
-	"nju_auto_ddns/provider"
+	"nju_auto_ddns/notify"
 	"time"
 )
 
-func App(conf *AutoDdnsConf, ddns *provider.DDNSCloudflare, bark *bark.NotifierBark) {
+func App(conf *AutoDdnsConf, ddns ddns.IDynamicDNS, bark notify.INotifier) {
 	// TODO: Support other ddns tools and notifiers
 	for {
 		_, err := njubras.DoLogin(conf.Bras.UserName, conf.Bras.Password)
